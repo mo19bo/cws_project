@@ -9,24 +9,27 @@ f_act = codecs.open('seg_result.utf8', 'r', 'utf8')
 
 print 'loading actual result...'
 pos_act = set()
-str_act = ''
-str_act = u'　'.join(f_act.readlines()).replace('\n','').replace('\r','')
+list_act = u'　'.join(f_act.readlines()).replace('\n','').replace('\r','').split(u'　')
 f_act.close()
 
 print 'loading expected result...'
 pos_exp = set()
-str_exp = u'　'.join(f_exp.readlines()).replace('\n','').replace('\r','')
+list_exp = u'　'.join(f_exp.readlines()).replace('\n','').replace('\r','').split(u'　')
 f_exp.close()
 
 print 'obtaining sementation position (act)...'
-for idx, c in enumerate(str_act):
-  if c == u'　': pos_act.add(idx)
+accumulated_pos = 0
+for c in list_act:
+  accumulated_pos += len(c)
+  pos_act.add(accumulated_pos)
 
 print 'obtaining sementation position (exp)...'
-for idx, c in enumerate(str_exp):
-  if c == u'　': pos_exp.add(idx)
+accumulated_pos = 0
+for c in list_exp:
+  accumulated_pos += len(c)
+  pos_exp.add(accumulated_pos)
 
 start_time = time.time()
 print 'computing score...'
 print 'recall = {0:.2f}'.format( float( len(pos_act & pos_exp) ) / len(pos_exp) )
-print 'presision = {0:.2f}'.format( float( len(pos_act & pos_exp) ) / len(pos_act) )
+print 'precision = {0:.2f}'.format( float( len(pos_act & pos_exp) ) / len(pos_act) )
