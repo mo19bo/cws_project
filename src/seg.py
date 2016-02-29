@@ -54,15 +54,6 @@ while pos_end < input_length:
     pos_end = pos_begin + 1
     entropy_prev = forward_entropy.get(input_str[pos_begin:pos_end], 0)
     pos_end += 1
-  '''
-  # pre-seg punctuation
-  if input_str[pos_end - 1] in punctuations:
-    forward_branch_pos.append(pos_end - 1)
-    forward_branch_pos.append(pos_end)
-    pos_begin = pos_end
-    pos_end = pos_begin + 1
-    entropy_prev = forward_entropy.get(input_str[pos_begin:pos_end], 0)
-  '''
 
 sys.stdout.write('\rforward branching... {0:.1f} s \n'.format(time.time() - start_time))
 sys.stdout.flush()
@@ -84,15 +75,6 @@ while pos_begin > 0:
     pos_begin = pos_end - 1
     entropy_prev = backward_entropy.get(input_str[pos_begin:pos_end], 0)
     pos_begin -= 1
-  '''
-  # pre-seg punctuation
-  if input_str[pos_begin + 1] in punctuations:
-    backward_branch_pos.append(pos_begin + 1)
-    backward_branch_pos.append(pos_begin)
-    pos_end = pos_begin
-    pos_begin = pos_end - 1
-    entropy_prev = backward_entropy.get(input_str[pos_begin:pos_end], 0)
-  '''
 
 sys.stdout.write('\rbackward branching... {0:.1f} s \n'.format(time.time() - start_time))
 sys.stdout.flush()
@@ -108,13 +90,10 @@ for pos in branch_pos_set:
 f_result = codecs.open('seg_result.utf8', 'w', 'utf8')
 
 for idx, s in enumerate(input_str):
-  if s in punctuations:
-    f_result.write('\n' + s + '\n')
-  else:
-    f_result.write(s)
-    if idx+1 in branch_pos:
-      f_result.write('\n')
-      branch_pos.pop(idx+1, None)
+  f_result.write(s)
+  if idx+1 in branch_pos:
+    f_result.write('\n')
+    branch_pos.pop(idx+1, None)
 
 f_result.close()
 print 'result generation done {0:.1f} s'.format(time.time() - start_time)

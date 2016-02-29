@@ -90,10 +90,13 @@ for pos in branch_pos_set:
 f_result = codecs.open('seg_result.utf8', 'w', 'utf8')
 
 for idx, s in enumerate(input_str):
-  f_result.write(s)
-  if idx+1 in branch_pos:
-    f_result.write('\n')
-    branch_pos.pop(idx+1, None)
+  if s in punctuations:
+    f_result.write('\n' + s + '\n')
+  else:
+    f_result.write(s)
+    if idx+1 in branch_pos:
+      f_result.write('\n')
+      branch_pos.pop(idx+1, None)
 
 f_result.close()
 print 'result generation done {0:.1f} s'.format(time.time() - start_time)
